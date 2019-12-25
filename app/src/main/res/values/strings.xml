@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SecurityPoke</string>
+    <string name="com_auth0_client_id">3Vm9GjtmF5vVfydFWyrPQTqaaWayFpUi</string>
+    <string name="com_auth0_domain">humtum.auth0.com</string>
+</resources>
