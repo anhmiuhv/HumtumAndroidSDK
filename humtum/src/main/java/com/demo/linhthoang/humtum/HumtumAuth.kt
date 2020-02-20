@@ -8,22 +8,35 @@ import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.provider.AuthCallback
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
-import java.lang.RuntimeException
 
 
 open class HumtumAuth(context: Context) {
-    var account = Auth0(context)
+    private val account = Auth0(context)
+    private val config: HumtumConfig
+    private val appId: String
 
-    open fun login(activity: Activity, authCallback: AuthCallback) =
-        WebAuthProvider.login(account)
-            .start(activity, authCallback);
+    init {
+        val ip = getResourceFromContext(context, "humtum_ip")
+            ?: throw HumtumException("IP not specified")
+        val websocket = getResourceFromContext(context, "humtum_websocket")
+            ?: throw HumtumException("websocket url not specified")
+        val apiUrl = getResourceFromContext(context, "humtum_apiUrl") ?: "/"
+        val clientId = getResourceFromContext(context, "humtum_clientid")
+            ?: throw HumtumException("client id not specified")
+        val clientSecret = getResourceFromContext(context, "humtum_clientSecret")
+            ?: throw HumtumException("client secret not specified")
+        appId = getResourceFromContext(context, "humtum_appid")
+            ?: throw HumtumException("appid not specified")
+        config = HumtumConfig("https://$ip", websocket, apiUrl, clientId, clientSecret)
+    }
 
     open fun login(activity: Activity
                    , _onSuccess: (Humtum) -> Unit
                    , _onError: (RuntimeException) -> Unit = { e -> throw e }
-                   , config: HumtumConfig = HumtumConfig()
     ) {
         WebAuthProvider.login(account)
+            .withScheme("demo")
+            .withScope("openid email profile")
             .start(activity, object: AuthCallback {
                 override fun onSuccess(credentials: Credentials) {
                     _onSuccess(Humtum(config, HumtumCredential(credentials)))
@@ -34,7 +47,7 @@ open class HumtumAuth(context: Context) {
                 }
 
                 override fun onFailure(exception: AuthenticationException?) {
-                    _onError(HumtumException(exception.toString()))
+                    _onError(HumtumException("${exception?.description}  (${exception?.code})"))
                 }
 
             })
@@ -47,12 +60,8 @@ open class HumtumAuth(context: Context) {
     ): String? {
         val stringRes =
             context.resources.getIdentifier(resName, "string", context.packageName)
-        require(stringRes != 0) {
-            String.format(
-                "The 'R.string.%s' value it's not defined in your project's resources file.",
-                resName
-            )
-        }
+        if (stringRes == 0) return null
+
         return context.getString(stringRes)
     }
 

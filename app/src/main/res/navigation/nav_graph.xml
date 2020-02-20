@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/nav_graph"
+        app:startDestination="@id/friend">
+
+    <activity
+            android:id="@+id/mainActivity"
+            android:name="com.demo.linhthoang.securitypoke.MainActivity"
+            android:label="activity_main"
+            tools:layout="@layout/activity_main" />
+    <fragment
+            android:id="@+id/friend"
+            android:name="com.demo.linhthoang.securitypoke.FriendsList"
+            tools:layout="@layout/fragment_friend" />
+    <fragment
+            android:id="@+id/notification"
+            android:name="com.demo.linhthoang.securitypoke.NotificationsList"
+            tools:layout="@layout/fragment_noti" />
+    <fragment
+            android:id="@+id/search"
+            android:name="com.demo.linhthoang.securitypoke.SearchList"
+            tools:layout="@layout/fragment_search" />
+    <fragment
+            android:id="@+id/profile"
+            android:name="com.demo.linhthoang.securitypoke.Profile"
+            tools:layout="@layout/fragment_profile" />
+</navigation>
