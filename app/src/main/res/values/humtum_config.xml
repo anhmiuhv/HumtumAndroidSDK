@@ -2,7 +2,5 @@
 <resources>
     <string name="humtum_appid">1</string>
     <string name="humtum_ip">c3bf6c03.ngrok.io</string>
-    <string name="humtum_websocket">4d7dc6b0.ngrok.io</string>
-    <string name="humtum_clientid">123</string>
-    <string name="humtum_clientSecret">456</string>
+    <string name="humtum_websocket">4d7dc6b0.ngrok.iog</string>
 </resources>

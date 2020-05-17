@@ -13,15 +13,17 @@ import com.auth0.android.result.Credentials
 import com.beust.klaxon.Klaxon
 import com.demo.linhthoang.humtum.Humtum
 import com.demo.linhthoang.humtum.HumtumAuth
+import com.demo.linhthoang.humtum.HumtumManager
+import com.demo.linhthoang.humtum.HumtumMessage
 import com.demo.linhthoang.securitypoke.Model.FriendRequestMessage
 import com.demo.linhthoang.securitypoke.Model.MessageData
 import com.demo.linhthoang.securitypoke.Model.User
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.serialization.json.json
 
 
 const val TAG = "Linh"
-var humtum: Humtum? = null
-const val appId = "1"
+const val appId = "4"
 
 fun toast(toast: Toast) {
     val handler = Handler(Looper.getMainLooper())
@@ -32,6 +34,7 @@ fun toast(toast: Toast) {
 class MainActivity : AppCompatActivity() {
     var credentials: Credentials? = null
     lateinit var toolbar: ActionBar
+    var humtum: Humtum? = null
 
 
 
@@ -40,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         HumtumAuth(this).login(this,
             {
-                humtum = it
+                humtum = HumtumManager.currentInstance
 //                humtum?.enrollInApp(appId, {}, {
 //                    toast(Toast.makeText(this, "Failed to enroll participants", Toast.LENGTH_LONG))
 //                })
@@ -84,6 +87,14 @@ class MainActivity : AppCompatActivity() {
             })
             it.subscribeToMessageChannel({
                 Log.d(TAG, "Connected")
+                humtum?.createMessage(HumtumMessage("1", "test"
+                    , appId,
+                    json {
+                        "message".to("hello")
+                    }, arrayOf(1))
+                , { Log.d(TAG, "Success")}
+                , { Log.e(TAG, it.toString()) }
+                )
 
             }, {
                 Log.d(TAG, "Disconnected")

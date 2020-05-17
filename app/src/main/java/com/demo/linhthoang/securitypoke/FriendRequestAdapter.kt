@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.demo.linhthoang.humtum.HumtumManager
 
 
 class FriendRequestAdapter(val model: AppViewModel) :
@@ -43,7 +44,7 @@ class FriendRequestAdapter(val model: AppViewModel) :
                         data.received[position].sender?.name
                     viewHolder.approve.setOnClickListener {
                         data.received[position].sender?.id?.let { id ->
-                            humtum?.approveFriendRequest(appId, id.toString(), {
+                            HumtumManager.currentInstance?.approveFriendRequest(appId, id.toString(), {
 
                                 toast(
                                     Toast.makeText(
@@ -67,7 +68,7 @@ class FriendRequestAdapter(val model: AppViewModel) :
                     }
                     viewHolder.reject.setOnClickListener {
                         data.received[position].sender?.id?.let { id ->
-                            humtum?.rejectFriendRequest(appId, id.toString(), {
+                            HumtumManager.currentInstance?.rejectFriendRequest(appId, id.toString(), {
 
                                 toast(
                                     Toast.makeText(

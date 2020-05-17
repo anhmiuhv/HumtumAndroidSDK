@@ -11,11 +11,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.beust.klaxon.Klaxon
+import com.demo.linhthoang.humtum.HumtumManager
 import com.demo.linhthoang.securitypoke.Model.FriendRequestMessage
 import com.demo.linhthoang.securitypoke.Model.User
 
 fun refreshFriendRequest(model: AppViewModel) {
-    humtum?.let {
+    HumtumManager.currentInstance?.let {
         it.getFriendRequests(appId, { data ->
             try {
                 Log.d(TAG, data)
@@ -32,7 +33,7 @@ fun refreshFriendRequest(model: AppViewModel) {
 }
 
 fun refreshFriends(model: AppViewModel) {
-    humtum?.let {
+    HumtumManager.currentInstance?.let {
         it.getFriends(appId, { data ->
             try {
                 val f = Klaxon().parseArray<User>(data)?.toTypedArray()
@@ -60,7 +61,7 @@ class SearchList : Fragment() {
         view.findViewById<Button>(R.id.button).setOnClickListener { v ->
             try {
                 val b = view.findViewById<EditText>(R.id.userid).text.trim().toString().toInt()
-                humtum?.addFriend(appId, b.toString(), { str ->
+                HumtumManager.currentInstance?.addFriend(appId, b.toString(), { str ->
                     Log.d(TAG, str)
                     toast(Toast.makeText(context, "Successful", Toast.LENGTH_LONG))
                     activity?.let {
