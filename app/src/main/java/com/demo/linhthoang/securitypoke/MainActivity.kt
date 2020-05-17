@@ -9,11 +9,10 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import com.auth0.android.result.Credentials
 import com.beust.klaxon.Klaxon
 import com.demo.linhthoang.humtum.Humtum
+import com.demo.linhthoang.humtum.HumtumApp
 import com.demo.linhthoang.humtum.HumtumAuth
-import com.demo.linhthoang.humtum.HumtumManager
 import com.demo.linhthoang.humtum.HumtumMessage
 import com.demo.linhthoang.securitypoke.Model.FriendRequestMessage
 import com.demo.linhthoang.securitypoke.Model.MessageData
@@ -32,18 +31,17 @@ fun toast(toast: Toast) {
 
 
 class MainActivity : AppCompatActivity() {
-    var credentials: Credentials? = null
-    lateinit var toolbar: ActionBar
-    var humtum: Humtum? = null
-
-
+    private lateinit var toolbar: ActionBar
+    private var humtum: Humtum? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        HumtumAuth(this).login(this,
+        HumtumApp.initialize(this)
+        HumtumAuth.launchLoginUI(
+            this,
             {
-                humtum = HumtumManager.currentInstance
+                humtum = HumtumApp.currentInstance
 //                humtum?.enrollInApp(appId, {}, {
 //                    toast(Toast.makeText(this, "Failed to enroll participants", Toast.LENGTH_LONG))
 //                })

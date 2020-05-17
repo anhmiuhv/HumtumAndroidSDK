@@ -29,7 +29,7 @@ class FriendsList : Fragment() {
             activity?.let {
                 adapter = FriendAdapter(ViewModelProvider(it)[AppViewModel::class.java])
                 ViewModelProvider(it)[AppViewModel::class.java].users.observe(it,
-                    Observer { t ->
+                    Observer {
                         adapter?.notifyDataSetChanged()
                     })
             }

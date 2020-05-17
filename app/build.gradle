@@ -38,7 +38,7 @@ dependencies {
     implementation 'com.beust:klaxon:5.0.1'
 
     implementation 'com.auth0.android:auth0:1.19.1'
-    def nav_version = "2.2.1"
+    def nav_version = "2.2.2"
 
     // Java language implementation
     implementation "androidx.navigation:navigation-fragment:$nav_version"

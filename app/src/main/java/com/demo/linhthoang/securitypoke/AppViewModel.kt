@@ -19,7 +19,7 @@ class AppViewModel : ViewModel() {
     }
 
     val messages: MutableLiveData<Array<String>> by lazy {
-        MutableLiveData(emptyArray())
+        MutableLiveData(emptyArray<String>())
     }
 
 }

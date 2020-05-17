@@ -16,16 +16,18 @@ import okhttp3.logging.HttpLoggingInterceptor
 import java.io.IOException
 import java.net.URI
 
-@Serializable
-data class Data(val relationship_request: Map<String, String>)
 
 
-val TAG = "Humtum"
 
 class Humtum internal constructor(
     private val config: HumtumConfig,
     private val manager: SecureCredentialsManager
 ) {
+    val TAG = "Humtum"
+
+    @Serializable
+    private data class RelationshipRequestData(val relationship_request: Map<String, String>)
+
 
     private val baseUrl = "${config.ip}${config.apiUrl}"
     private val client = OkHttpClient.Builder()
@@ -234,6 +236,10 @@ class Humtum internal constructor(
         _onFailure: (e: java.lang.Exception) -> Unit = defaultE
     ) = relRequestResponse(appID, friendID, "follow", "reject", _onSuccess, _onFailure)
 
+    internal fun logOut() {
+        manager.clearCredentials()
+    }
+
     private val defaultE = { e: java.lang.Exception -> throw e }
     private val jsonType = "application/json; charset=utf-8".toMediaTypeOrNull()
     private val json = Json(JsonConfiguration.Stable)
@@ -255,7 +261,8 @@ class Humtum internal constructor(
         _onFailure: (e: java.lang.Exception) -> Unit
     ) {
         val url = "${baseUrl}relationships/${appID}/${type}/${friendID}"
-        val requestBody = json.stringify(Data.serializer(), Data(data))
+        val requestBody =
+            json.stringify(RelationshipRequestData.serializer(), RelationshipRequestData(data))
         _credentials({
             client.newCall(sendRequest(it, url, requestBody.toRequestBody(jsonType), "PUT"))
                 .enqueue(template(_onSuccess, _onFailure))

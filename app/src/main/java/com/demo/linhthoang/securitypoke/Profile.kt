@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.demo.linhthoang.humtum.HumtumManager
+import com.demo.linhthoang.humtum.HumtumApp
 
 
 class Profile : Fragment() {
@@ -18,7 +18,7 @@ class Profile : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
-        HumtumManager.currentInstance?.getSelf({ string ->
+        HumtumApp.currentInstance?.getSelf({ string ->
             activity?.let {
 
                 val profile = ViewModelProvider(it)[AppViewModel::class.java].profile
