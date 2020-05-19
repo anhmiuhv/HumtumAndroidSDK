@@ -16,7 +16,7 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.humtum-platform:HumtumAndroidSDK:Tag'
+	        implementation 'com.github.humtum-platform:HumtumAndroidSDK:v0.1-alpha'
 	}
 
 
