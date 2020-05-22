@@ -1,5 +1,6 @@
 package com.demo.linhthoang.humtum
 
+import android.util.Base64
 import android.util.Log
 import com.auth0.android.authentication.storage.CredentialsManagerException
 import com.auth0.android.authentication.storage.SecureCredentialsManager
@@ -17,8 +18,6 @@ import java.io.IOException
 import java.net.URI
 
 
-
-
 class Humtum internal constructor(
     private val config: HumtumConfig,
     private val manager: SecureCredentialsManager
@@ -27,6 +26,9 @@ class Humtum internal constructor(
 
     @Serializable
     private data class RelationshipRequestData(val relationship_request: Map<String, String>)
+
+    @Serializable
+    private data class ActionCableAuthToken(val id_token: String?, val access_token: String?)
 
 
     private val baseUrl = "${config.ip}${config.apiUrl}"
@@ -40,7 +42,9 @@ class Humtum internal constructor(
     private val options = { credentials: Credentials ->
         Consumer.Options().apply {
             this.connection.headers = mapOf(
-                "Sec-WebSocket-Protocol" to "actioncable-v1-json, actioncable-unsupported, ${credentials.idToken}",
+                "Sec-WebSocket-Protocol" to "actioncable-v1-json, actioncable-unsupported, ${generateAuthToken(
+                    credentials
+                )}",
                 "Origin" to "http://localhost:3000",
                 "Sec-WebSocket-Extensions" to "permessage-deflate; client_max_window_bits"
             )
@@ -165,6 +169,11 @@ class Humtum internal constructor(
         _onFailure: (e: java.lang.Exception) -> Unit = defaultE
     ) = getAppData(appId, "users", _onSuccess, _onFailure)
 
+    fun searchUsersInApp(
+        appId: String, query: String, _onSuccess: (json: String) -> Unit,
+        _onFailure: (e: java.lang.Exception) -> Unit = defaultE
+    ) = searchAppData(appId, query, "users", _onSuccess, _onFailure)
+
 
     fun enrollInApp(
         appId: String, _onSuccess: (json: String) -> Unit,
@@ -254,6 +263,15 @@ class Humtum internal constructor(
         getResult(url, _onSuccess, _onFailure)
     }
 
+    private fun searchAppData(
+        appId: String, query: String, dataPath: String, _onSuccess: (json: String) -> Unit,
+        _onFailure: (e: java.lang.Exception) -> Unit = defaultE
+    ) {
+        val url = "${baseUrl}apps/$appId/$dataPath?q=${query}"
+        Log.d(TAG, url)
+        getResult(url, _onSuccess, _onFailure)
+    }
+
     private fun putRelRequest(
         appID: String, friendID: String, type: String,
         data: Map<String, String>,
@@ -336,5 +354,11 @@ class Humtum internal constructor(
     ) = _credentials({
         client.newCall(sendRequest(it, url)).enqueue(template(_onSuccess, _onFailure))
     }, _onFailure)
+
+    private fun generateAuthToken(credentials: Credentials): ByteArray? {
+        val token = ActionCableAuthToken(credentials.idToken, credentials.accessToken)
+        val jwt = json.stringify(ActionCableAuthToken.serializer(), token)
+        return Base64.encode(jwt.toByteArray(), Base64.NO_PADDING)
+    }
 }
 
